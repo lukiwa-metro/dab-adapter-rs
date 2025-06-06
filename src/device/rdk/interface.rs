@@ -385,11 +385,10 @@ pub fn service_is_available(service: &str) -> Result<bool, DabError> {
     }
 */
 
-// TODO: Extend this struct, so it contains more settings value,
-// instead of having them in different files and in /opt
 #[derive(Deserialize, Debug)]
 struct Settings {
     supported_languages: Option<Vec<String>>,
+    device_info: Option<HashMap<String, String>>
 }
 
 lazy_static! {
@@ -411,6 +410,7 @@ lazy_static! {
         println!("Using default settings.");
         Settings {
             supported_languages: None,
+            device_info: None
         }
 
     };
@@ -546,13 +546,16 @@ lazy_static! {
 // Parameter: propertyname: The property to get the value of.
 // Returns the value of the property on success else DabError.
 pub fn get_rdk_device_info(propertyname: &str) -> Result<String, DabError> {
-    match RDK_DEVICE_INFO.get(propertyname) {
-        Some(val) => Ok(val.clone()),
-        None => {
-            let error_message = DabError::Err500(format!("No match for property {propertyname}."));
-            return Err(error_message);
+    if let Some(val) = RDK_DEVICE_INFO.get(propertyname) {
+        return Ok(val.clone());
+    }
+    println!("Property not found in RDK_DEVICE_INFO. Performing lookup in dab settings.");
+    if let Some(device_info) = &SETTINGS.device_info {
+        if let Some(val) =  device_info.get(propertyname){
+            return Ok(val.clone());
         }
     }
+    Err(DabError::Err500(format!("No match for property {propertyname}.")))
 }
 
 pub fn get_ip_address() -> String {
