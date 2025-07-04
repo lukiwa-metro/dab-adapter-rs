@@ -7,6 +7,7 @@ use crate::dab::structs::ListSystemSettingsRequest;
 use crate::dab::structs::ListSystemSettingsResponse;
 use crate::dab::structs::MatchContentFrameRate;
 use crate::dab::structs::OutputResolution;
+use crate::dab::structs::PictureMode;
 use crate::dab::structs::VideoInputSource;
 use crate::device::rdk::interface::rdk_request;
 use crate::device::rdk::interface::rdk_request_with_params;
@@ -204,31 +205,15 @@ pub fn process(_dab_request: ListSystemSettingsRequest) -> Result<String, DabErr
 
     ResponseOperator.matchContentFrameRate = vec![
         MatchContentFrameRate::EnabledAlways,
-        // MatchContentFrameRate::EnabledSeamlessOnly,
-        // MatchContentFrameRate::Disabled,
     ];
 
     ResponseOperator.pictureMode = vec![
-        // PictureMode::Standard,
-        // PictureMode::Dynamic,
-        // PictureMode::Movie,
-        // PictureMode::Sports,
-        // PictureMode::FilmMaker,
-        // PictureMode::Game,
-        // PictureMode::Auto,
+        PictureMode::Standard,
     ];
     ResponseOperator.audioOutputMode = get_rdk_audio_output_modes()?;
     ResponseOperator.audioOutputSource = get_rdk_supported_audio_source()?;
     ResponseOperator.videoInputSource = vec![
-        //VideoInputSource::Tuner,
-        // VideoInputSource::HDMI1,
-        // VideoInputSource::HDMI2,
-        // VideoInputSource::HDMI3,
-        // VideoInputSource::HDMI4,
-        // VideoInputSource::Composite,
-        // VideoInputSource::Component,
         VideoInputSource::Home,
-        // VideoInputSource::Cast,
     ];
 
     // *******************************************************************

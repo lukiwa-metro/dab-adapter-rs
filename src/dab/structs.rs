@@ -263,7 +263,7 @@ pub struct OutputResolution {
 }
 
 #[allow(dead_code)]
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize, PartialEq)]
 pub enum MatchContentFrameRate {
     #[default]
     EnabledAlways,
@@ -281,7 +281,7 @@ pub enum HdrOutputMode {
 }
 
 #[allow(dead_code)]
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize, PartialEq)]
 pub enum PictureMode {
     #[default]
     Standard,
@@ -318,7 +318,7 @@ pub enum AudioOutputSource {
 }
 
 #[allow(dead_code)]
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize, PartialEq)]
 pub enum VideoInputSource {
     Tuner,
     HDMI1,

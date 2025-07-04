@@ -2,8 +2,11 @@ use crate::dab::structs::AudioOutputMode;
 use crate::dab::structs::AudioOutputSource;
 use crate::dab::structs::DabError;
 use crate::dab::structs::HdrOutputMode;
+use crate::dab::structs::MatchContentFrameRate;
 use crate::dab::structs::OutputResolution;
+use crate::dab::structs::PictureMode;
 use crate::dab::structs::SetSystemSettingsRequest;
+use crate::dab::structs::VideoInputSource;
 use crate::device::rdk::interface::rdk_request_with_params;
 use crate::device::rdk::interface::RdkResponseSimple;
 
@@ -17,6 +20,10 @@ use serde::{Deserialize, Serialize};
 
 use serde_json::Value;
 use std::collections::HashMap;
+
+fn is_equal_to_default<T: Default + PartialEq>(t: &T) -> bool {
+    t == &Default::default()
+}
 
 fn set_rdk_language(language: String) -> Result<(), DabError> {
     #[derive(Serialize)]
@@ -253,6 +260,13 @@ fn set_rdk_text_to_speech(val: bool) -> Result<(), DabError> {
     Ok(())
 }
 
+fn set_rdk_default_only<T: Default + PartialEq>(t: T) -> Result<(), DabError> {
+    if !is_equal_to_default(&t) {
+        return Err(DabError::Err400("Setting is not supported".to_string()));
+    }
+    Ok(())
+}
+
 pub fn process(_dab_request: SetSystemSettingsRequest) -> Result<String, DabError> {
     let _packet = serde_json::to_string(&_dab_request).unwrap();
     let mut json_map: HashMap<&str, Value> = serde_json::from_str(&_packet).unwrap();
@@ -280,7 +294,17 @@ pub fn process(_dab_request: SetSystemSettingsRequest) -> Result<String, DabErro
                 set_rdk_hdr_mode(serde_json::from_value::<HdrOutputMode>(value.take()).unwrap())?
             }
             "textToSpeech" => set_rdk_text_to_speech(value.take().as_bool().unwrap())?,
-            "pictureMode" | "videoInputSource" | "lowLatencyMode" | _ => {
+            "pictureMode" => set_rdk_default_only(
+                serde_json::from_value::<PictureMode>(value.take()).unwrap(),
+            )?,
+            "videoInputSource" => set_rdk_default_only(
+                serde_json::from_value::<VideoInputSource>(value.take()).unwrap(),
+            )?,
+            "lowLatencyMode" => set_rdk_default_only(value.take().as_bool().unwrap())?, //default value of boolean is 'false'
+            "matchContentFrameRate" => set_rdk_default_only(
+                serde_json::from_value::<MatchContentFrameRate>(value.take()).unwrap(),
+            )?,
+            _ => {
                 return Err(DabError::Err400(format!(
                     "Setting '{}' is not supported",
                     key

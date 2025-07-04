@@ -318,7 +318,6 @@ pub fn process(_dab_request: GetSystemSettingsRequest) -> Result<String, DabErro
     response.hdrOutputMode = get_rdk_hdr_current_setting()?;
     response.audioOutputMode = get_rdk_audio_output_mode()?;
     response.audioOutputSource = get_rdk_connected_audio_source()?;
-    response.lowLatencyMode = false;
     response.textToSpeech = get_rdk_tts()?;
 
     Ok(serde_json::to_string(&response).unwrap())
