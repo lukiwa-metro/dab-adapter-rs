@@ -86,6 +86,12 @@ pub fn process(_dab_request: OperationsListRequest) -> Result<String, DabError> 
     // ResponseOperator
     //     .operations
     //     .push("system/language/set".to_string());
+    #[cfg(feature = "2_1")]
+    {
+    ResponseOperator
+        .operations
+        .push("system/power-mode/get".to_string());
+    }
     ResponseOperator.operations.shrink_to_fit();
 
     // *******************************************************************

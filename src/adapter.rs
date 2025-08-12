@@ -158,6 +158,14 @@ pub fn main() {
     );
     handlers.insert("version".to_string(), RequestTypes::VersionRequest);
 
+    #[cfg(feature = "2_1")]
+    {
+    handlers.insert(
+        "system/power-mode/get".to_string(),
+        RequestTypes::SystemPowerModeGetRequest,
+    );
+    }
+
     if create_retire_thread {
         let _handle = thread::Builder::new()
             .name("ExitPathMonitor".to_string())

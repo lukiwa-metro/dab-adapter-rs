@@ -33,6 +33,8 @@ pub enum RequestTypes {
     VoiceSendAudioRequest,
     VoiceSendTextRequest,
     VersionRequest,
+    #[cfg(feature = "2_1")]
+    SystemPowerModeGetRequest,
 }
 
 #[allow(non_snake_case)]
@@ -560,3 +562,29 @@ pub struct StartAppTelemetryResponse {
     pub app_id: String,
     pub duration: u64,
 }
+
+#[cfg(feature = "2_1")]
+mod feature_2_1 {
+    use serde::{Deserialize, Serialize};
+
+    #[allow(dead_code)]
+    #[derive(Default, Serialize, Deserialize)]
+    pub enum PowerMode {
+        #[default]
+        Active,
+        Standby,
+    }
+
+    #[allow(non_snake_case)]
+    #[derive(Default, Serialize, Deserialize)]
+    pub struct PowerModeGetRequest {}
+
+    #[allow(non_snake_case)]
+    #[derive(Default, Serialize, Deserialize)]
+    pub struct PowerModeGetResponse {
+        pub powerMode: PowerMode
+    }
+}
+
+#[cfg(feature = "2_1")]
+pub use feature_2_1::*;

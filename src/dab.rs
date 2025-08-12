@@ -119,6 +119,12 @@ fn call_function(json_str: String, request_type: RequestTypes) -> Result<String,
                 serde_json::from_str(&json_str).map_err(|e| DabError::Err400(e.to_string()))?;
             hw_specific::version::process(dab_request)
         }
+        #[cfg(feature = "2_1")]
+        RequestTypes::SystemPowerModeGetRequest => {
+            let dab_request: structs::PowerModeGetRequest =
+                serde_json::from_str(&json_str).map_err(|e| DabError::Err400(e.to_string()))?;
+            hw_specific::system::power_mode::get::process(dab_request)
+        }
     }
 }
 
